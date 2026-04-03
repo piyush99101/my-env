@@ -27,7 +27,7 @@ class StepRequest(BaseModel):
 
 
 class ResetRequest(BaseModel):
-    task: str
+    task: str = "easy"
 
 
 # ---------------------------
@@ -40,7 +40,7 @@ env_store = {}
 # 🔁 RESET
 # ---------------------------
 @app.post("/reset")
-def reset(req: ResetRequest):
+def reset(req: ResetRequest = ResetRequest()):
     env = InterviewEnv(req.task)
     obs = env.reset()
 
