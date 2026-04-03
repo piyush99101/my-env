@@ -5,6 +5,19 @@ from env.models import Action
 
 app = FastAPI()
 
+
+# ---------------------------
+# 🏠 ROOT (HEALTH CHECK)
+# ---------------------------
+@app.get("/")
+def read_root():
+    return {"message": "AI Interview Trainer is running!"}
+
+
+@app.get("/health")
+def health():
+    return {"status": "healthy"}
+
 # ---------------------------
 # 📦 Request Models
 # ---------------------------
