@@ -13,6 +13,10 @@ class StepRequest(BaseModel):
     answer: str
 
 
+class ResetRequest(BaseModel):
+    task: str
+
+
 # ---------------------------
 # 🌍 GLOBAL ENV STORE
 # ---------------------------
@@ -23,11 +27,11 @@ env_store = {}
 # 🔁 RESET
 # ---------------------------
 @app.post("/reset")
-def reset(task: str):
-    env = InterviewEnv(task)
+def reset(req: ResetRequest):
+    env = InterviewEnv(req.task)
     obs = env.reset()
 
-    env_store[task] = env
+    env_store[req.task] = env
 
     return {
         "question": obs.question
