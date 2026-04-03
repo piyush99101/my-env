@@ -1,3 +1,13 @@
+---
+title: AI Interview Trainer (OpenEnv)
+emoji: 🎤
+colorFrom: indigo
+colorTo: blue
+sdk: docker
+app_file: app.py
+pinned: false
+---
+
 # AI Interview Trainer (OpenEnv)
 
 ## Overview
