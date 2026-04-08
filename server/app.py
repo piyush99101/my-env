@@ -66,7 +66,7 @@ def step(req: StepRequest):
 
     return {
         "question": result.observation.question,
-        "reward": float(result.reward),
+        "reward": int(result.reward),
         "done": result.done
     }
 
