@@ -18,19 +18,24 @@ class InterviewEnv:
         answer = answer.lower()
         score = 0
 
+        # Using small decimal values guarantees that even if ALL or NO 
+        # conditions are met, the score mathematically evaluates to 
+        # something strictly greater than 0.0 and strictly less than 1.0!
+        score = 0.1
+
         # Depth
         if len(answer.split()) > 10:
-            score += 1
+            score += 0.3
 
         # Reasoning
         if "because" in answer or "so" in answer:
-            score += 1
+            score += 0.3
 
         # Example
         if "example" in answer or "for instance" in answer:
-            score += 1
+            score += 0.2
 
-        return int(score)
+        return score
 
     def step(self, action):
         reward = self.evaluate(action.content)
