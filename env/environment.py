@@ -16,22 +16,21 @@ class InterviewEnv:
 
     def evaluate(self, answer):
         answer = answer.lower()
-        score = 0.0
+        score = 0
 
         # Depth
         if len(answer.split()) > 10:
-            score += 0.3
+            score += 1
 
         # Reasoning
         if "because" in answer or "so" in answer:
-            score += 0.3
+            score += 1
 
         # Example
         if "example" in answer or "for instance" in answer:
-            score += 0.4
+            score += 1
 
-        # Return strictly integer 1 or 0 exactly
-        return int(1) if score >= 0.5 else int(0)
+        return int(score)
 
     def step(self, action):
         reward = self.evaluate(action.content)
