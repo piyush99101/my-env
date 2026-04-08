@@ -15,4 +15,4 @@ observation_space:
   type: string
   description: Interview question
 
-reward_range: [0, 1]
+reward_range: [0.01, 0.99]
