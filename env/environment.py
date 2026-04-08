@@ -30,8 +30,8 @@ class InterviewEnv:
         if "example" in answer or "for instance" in answer:
             score += 0.4
 
-        # Return strictly 0.0 or 1.0
-        return 1.0 if score > 0.5 else 0.0
+        # Return strictly integer 0 or 1
+        return 1 if score >= 0.5 else 0
 
     def step(self, action):
         reward = self.evaluate(action.content)
