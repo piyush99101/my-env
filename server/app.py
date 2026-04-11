@@ -33,7 +33,8 @@ class ResetRequest(BaseModel):
 # ---------------------------
 # 🌍 GLOBAL ENV STORE
 # ---------------------------
-env_store = {}
+env_store = {}          # task -> InterviewEnv
+reward_store = {}       # task -> list of per-step rewards
 
 
 # ---------------------------
@@ -45,6 +46,7 @@ def reset(req: ResetRequest = ResetRequest()):
     obs = env.reset()
 
     env_store[req.task] = env
+    reward_store[req.task] = []       # clear history on reset
 
     return {
         "question": obs.question
@@ -64,11 +66,21 @@ def step(req: StepRequest):
     action = Action("respond", req.answer)
     result = env.step(action)
 
-    return {
+    rewards = reward_store.setdefault(req.task, [])
+    rewards.append(float(result.reward))
+
+    response = {
         "question": result.observation.question,
         "reward": float(result.reward),
         "done": result.done
     }
+
+    # When episode ends, return binary final score (0 or 1)
+    if result.done and rewards:
+        avg = sum(rewards) / len(rewards)
+        response["final_score"] = 1 if avg >= 0.5 else 0
+
+    return response
 
 
 # ---------------------------

@@ -1,6 +1,6 @@
 name: interview-env
 description: Interview answering system
-entrypoint: app.py
+entrypoint: server/app.py
 
 tasks:
   - easy
@@ -15,4 +15,4 @@ observation_space:
   type: string
   description: Interview question
 
-reward_range: [0.01, 0.99]
+reward_range: [0, 1]

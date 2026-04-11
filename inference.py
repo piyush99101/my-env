@@ -136,10 +136,10 @@ def run_task(task_name):
         f"[END] task={task_name} | total={total_reward:.2f} | avg={avg_reward:.2f}"
     )
 
-    # Clamp: score must be strictly within (0, 1) — never exactly 0.0 or 1.0
-    avg_reward = max(0.01, min(0.99, avg_reward))
+    # Score: 1 (pass) or 0 (fail)
+    score = 1 if avg_reward >= 0.5 else 0
 
-    return avg_reward
+    return score
 
 
 # ---------------------------
