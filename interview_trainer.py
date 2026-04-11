@@ -9,7 +9,7 @@ from groq import Groq
 load_dotenv()
 
 # Initialize Groq client
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+client = Groq(api_key=os.getenv("HF_TOKEN"))
 
 # 🎯 Role-based questions
 QUESTION_BANK = {
@@ -54,7 +54,7 @@ Give:
 """
 
     response = client.chat.completions.create(
-        model="llama3-70b-8192",
+        model="llama-3.1-8b-instant",
         messages=[{"role": "user", "content": prompt}]
     )
 
@@ -68,51 +68,60 @@ def evaluate_answer(answer, response_time):
     answer_lower = answer.lower()
     words = answer_lower.split()
 
-    score = 0
+    score = 0.0
     feedback = []
 
     # Depth
     if len(words) > 40:
-        score += 3
+        score += 0.3
         feedback.append("✔ Detailed")
     elif len(words) > 20:
-        score += 2
+        score += 0.2
         feedback.append("✔ Good length")
     else:
-        score += 1
+        score += 0.1
         feedback.append("❌ Too short")
 
     # Structure
     if len(re.split(r'[.!?]+', answer)) >= 3:
-        score += 2
+        score += 0.2
         feedback.append("✔ Structured")
     else:
         feedback.append("❌ Poor structure")
 
     # Reasoning
     if any(w in answer_lower for w in ["because", "therefore", "so"]):
-        score += 2
+        score += 0.2
         feedback.append("✔ Reasoning present")
 
     # Example
     if "for example" in answer_lower:
-        score += 2
+        score += 0.2
         feedback.append("✔ Example used")
 
     # Confidence
     if any(w in answer_lower for w in ["achieved", "built", "led"]):
-        score += 2
+        score += 0.2
         feedback.append("✔ Confident tone")
 
     # Time factor
     if response_time < 5:
-        score += 1
+        score += 0.1
         feedback.append("✔ Fast response")
     elif response_time > 20:
-        score -= 1
+        score -= 0.1
         feedback.append("⚠ Too slow")
 
-    final_score = max(0, min(score, 10))
+    final_score = max(0.01, min(0.99, score))
+    
+    # Add more detailed feedback
+    if final_score < 0.5:
+        feedback.append("❌ Your answer needs more depth, structure, and reasoning.")
+    elif final_score < 0.7:
+        feedback.append("⚠ Your answer is good, but could be improved with more detail and clarity.")
+    else:
+        feedback.append("✔ Great job! Your answer demonstrates strong depth, structure, and reasoning.")
+
     return final_score, feedback
 
 
@@ -147,7 +156,7 @@ def run_interview():
         # 🤖 AI analysis
         ai_feedback = ai_analysis(answer, q)
 
-        print("\n📊 Score:", score, "/10")
+        print("\n📊 Score:", round(score * 10, 1), "/10")
         print("⏱ Response Time:", round(response_time, 2), "sec")
 
         print("\n🧠 System Feedback:")
@@ -173,4 +182,12 @@ def run_interview():
 
 
 if __name__ == "__main__":
+    # Quick local test
+    test_answer = "This is a detailed answer with good structure, reasoning, and examples. I have achieved many things in my career."
+    test_score, test_feedback = evaluate_answer(test_answer, 10)
+    print(f"[TEST] Score: {test_score:.2f} / 1.0")
+    for item in test_feedback:
+        print("- ", item)
+    print()
+
     run_interview()
